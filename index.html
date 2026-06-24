@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Enabling Robust Cloth Manipulation via Inference-Time Simulator-in-the-Loop Refinement">
+  <meta name="keywords" content="Deformable Object Manipulation, Simulator-in-the-Loop Optimization, Cloth State Estimation">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Enabling Robust Cloth Manipulation via Inference-Time Simulator-in-the-Loop Refinement</title>
+
+  <!-- TODO（可选）: 如需访问统计，填入你自己的 Google Analytics ID 并取消下面注释；不需要就保持删除状态。
+  <script async src="https://www.googletagmanager.com/gtag/js?id=YOUR-GA-ID"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'YOUR-GA-ID');
+  </script>
+  -->
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/icon.png">
+
+  <!-- 站点配置：公开实名 / 匿名 切换开关（须在样式之后、尽早执行，避免首屏闪烁） -->
+  <script src="./static/js/config.js"></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <!-- <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;"> -->
+      <!-- TODO: 把 href 换成你的项目主页 / 通讯作者主页（匿名版自动隐藏） -->
+      <!-- <a class="navbar-item public-only" href="#">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+    </div>
+  </div> -->
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">Enabling Robust Cloth Manipulation via Inference-Time Simulator-in-the-Loop Refinement</h1>
+
+          <!-- ===== 作者：匿名版（双盲评审期）===== -->
+          <div class="is-size-5 publication-authors anon-only">
+            <span class="author-block">Anonymous Author(s)</span>
+          </div>
+          <div class="is-size-5 publication-authors anon-only">
+            <span class="author-block">Paper under double-blind review</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- arXiv（实名版）：TODO 换成 arXiv abstract 链接 -->
+              <span class="link-block">
+                <a href="#"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Project Page（匿名版）：指向论文里写的匿名页 -->
+              <!-- <span class="link-block anon-only">
+                <a href="https://anonymous-clothmani.github.io/"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-globe"></i>
+                  </span>
+                  <span>Project Page</span>
+                </a>
+              </span> -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== 首屏讲解视频（YouTube 嵌入）===== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Overview Video</h2>
+    <!-- 匿名盲审版：本地视频占位。把压缩后的讲解视频放到 static/videos/overview.mp4（务必 <100MB），
+         并从 .gitignore 删掉 overview.mp4 那一行后再提交，盲审版才能在线上播放。 -->
+    <video class="anon-only" controls playsinline preload="metadata"
+           style="display:block; width:100%; aspect-ratio:16/9; border-radius:10px; margin-top:1rem; background:#000;">
+      <!-- 末尾的 #t=0.1 让浏览器定位到第 0.1 秒并把该帧作为封面（视频首帧），而不是黑屏 -->
+      <source src="./static/videos/overview_small.mp4#t=0.1" type="video/mp4">
+    </video>
+  </div>
+</section>
+
+
+<!-- ===== Abstract ===== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <div class="floating-card">
+          <h2 class="title is-3 has-text-centered">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              <i>Simulator-in-the-loop</i> optimization offers a promising inference-time mechanism for robot manipulation. It uses a physical simulator as a backend rollout engine to evaluate candidate trajectories in parallel and refine nominal actions online, a paradigm proven effective in rigid-body manipulation where state and contact are relatively tractable. We bring this paradigm to real-world cloth manipulation from a single RGB input through three pillars.
+            </p>
+            <p>
+              <b>(i)</b> We design a scalable synthetic-data generation and inference-time rollout pipeline built on <i>FLASH</i>, a deformable-object simulator that provides a practical balance among physical fidelity, numerical stability, and rollout efficiency. <b>(ii)</b> We develop a real-to-sim module, trained purely on synthetic data, that maps a single RGB observation to simulation-compatible cloth state by fusing pretrained visual features with learnable canonical tokens. <b>(iii)</b> We perform online planning by coupling a sparse-mesh rollout backend with prior-guided MPPI, anchored at an offline-distilled policy trajectory, preserving manipulation-relevant deformation and contact while enabling sufficient parallel rollout batches. Real-robot experiments show higher success rates and stronger robustness than baseline methods.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== Framework Overview：系统总览图 ===== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Framework</h2>
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <img src="./static/images/teaser4.png" alt="System overview" class="section-figure">
+        <p class="figure-caption">
+          <b>Overview of the proposed framework.</b> Offline, we use FLASH to generate synthetic data for real-to-sim training. Online, RGB observations initialize physics rollouts that refine the prior policy through MPPI for closed-loop hardware execution.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== Real-Robot Results：视频轮播（由模板 Results 轮播区改造）===== -->
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title is-3 has-text-centered" style="margin-bottom: 1.2rem;">Highlights</h2>
+      <!-- 平铺网格：每行 2 个（is-half）。想每行 3 个改成 is-one-third，每行 4 个改成 is-one-quarter。 -->
+      <div class="columns is-multiline is-centered">
+        <div class="column is-half">
+          <video autoplay controls muted loop playsinline class="result-video">
+            <source src="./static/videos/fold_single.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="column is-half">
+          <video autoplay controls muted loop playsinline class="result-video">
+            <source src="./static/videos/demo_bi_towel.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="column is-half">
+          <video autoplay controls muted loop playsinline class="result-video">
+            <source src="./static/videos/demo_bi_pant.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="column is-half">
+          <video autoplay controls muted loop playsinline class="result-video">
+            <source src="./static/videos/demo_bi_long_sleeve.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="column is-half">
+          <video autoplay controls muted loop playsinline class="result-video">
+            <source src="./static/videos/fold_4corner.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="column is-half">
+          <video autoplay controls muted loop playsinline class="result-video">
+            <source src="./static/videos/fold_single2.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <p class="figure-caption has-text-centered" style="margin-top: 0.4rem;">
+        <b>Self-collision is disabled during MPPI rollouts for sampling efficiency.</b>
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== Method（由模板 Visual Effects 区改造）===== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3 has-text-centered">Method</h2>
+        <div class="content has-text-justified">
+          <p>
+            We build a unified <i>simulator-in-the-loop</i> framework for real-world cloth manipulation.
+            <b>Offline</b>, FLASH generates scalable synthetic cloth-deformation data to train an
+            RGB-native real-to-sim module. <b>Online</b>, a single RGB observation is lifted into a
+            sparse simulation-compatible cloth state that synchronizes a sparse-mesh rollout backend;
+            a prior-guided MPPI controller then refines the nominal policy trajectory through parallel
+            physics rollouts and applies the optimized action in a receding-horizon loop on hardware.
+          </p>
+        </div>
+
+        <div class="columns" style="margin-top: 0.5rem;">
+          <div class="column">
+            <div class="pillar">
+              <h3>① FLASH Simulator Backend</h3>
+              <p>
+                A deformable-object simulator balancing physical fidelity, numerical stability, and rollout efficiency. It represents cloth as a triangular mesh, resolves frictional contact through non-smooth Newton iterations, and reduces computation to GPU-friendly sparse operations — enabling stable parallel rollouts for online control.
+              </p>
+            </div>
+          </div>
+          <div class="column">
+            <div class="pillar">
+              <h3>② RGB-native Real-to-Sim</h3>
+              <p>
+                A cloth state estimator trained purely on synthetic data that maps a single RGB image to a simulation-compatible cloth state. It fuses frozen DINOv2 visual features with learnable canonical tokens and an MLP decoder to predict the deformed 3D vertices of the garment mesh.
+              </p>
+            </div>
+          </div>
+          <div class="column">
+            <div class="pillar">
+              <h3>③ Prior-guided MPPI</h3>
+              <p>
+                An online planner coupling a sparse-mesh rollout backend with MPPI, anchored at an offline-distilled policy trajectory. It preserves manipulation-relevant deformation and contact while keeping enough parallel rollout batches under a real-time control budget.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== FLASH Simulator Backend（Method 之后、Real2Sim 之前）===== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Simulator Backend</h2>
+    <div class="content has-text-justified">
+      <p>
+        <b>FLASH</b> is a deformable-object simulator: it models cloth as a triangular mesh and
+        resolves frictional contact with non-smooth Newton iterations, reducing the heavy computation
+        to GPU-friendly sparse operations for stable, repeatable rollouts. We plug each simulator in
+        as the rollout engine of one and the same <b>vanilla MPPI</b> controller &mdash; holding the
+        cost, initial state, seed, and cloth asset fixed, and tuning every simulator's physical
+        parameters as carefully as we could &mdash; so that the observed differences are attributable
+        to the simulator backend under the shared MPPI setup. Under this fair comparison FLASH gives
+        the best accuracy&ndash;fidelity&ndash;speed trade-off across all
+        tested <b><i>K</i> &mdash; the number of parallel rollout environments (candidate action
+        sequences evaluated per MPPI step)</b>: <b>95&ndash;100% success</b> with keypoint error and MSE
+        about an order of magnitude lower than the others. The videos below show these
+        <b>vanilla-MPPI</b> diagonal-fold rollouts under the <b>same controller, cost, initial state,
+        seed, K, and cloth asset</b> &mdash; only the simulator backend differs.
+      </p>
+    </div>
+
+    <div style="overflow-x:auto;">
+      <table class="result-table">
+        <thead>
+          <tr>
+            <th>Simulator</th><th><i>K</i></th>
+            <th>Step [ms] &darr;</th><th>MPPI [s] &darr;</th>
+            <th>KP err. [cm] &darr;</th><th>MSE [cm&sup2;] &darr;</th>
+            <th>CD [cm] &darr;</th><th>EMD [cm] &darr;</th><th>SR &uarr;</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td rowspan="4">Newton</td><td>64</td><td>41.0</td><td>0.85</td><td>8.40 &plusmn; 8.72</td><td>56.8 &plusmn; 73.1</td><td>0.89 &plusmn; 0.71</td><td>1.77 &plusmn; 1.52</td><td>40%</td></tr>
+          <tr><td>128</td><td>55.1</td><td>1.14</td><td>10.28 &plusmn; 11.08</td><td>68.9 &plusmn; 93.7</td><td>0.73 &plusmn; 0.40</td><td>1.52 &plusmn; 1.22</td><td>40%</td></tr>
+          <tr><td>256</td><td>104.3</td><td>2.15</td><td>8.85 &plusmn; 10.71</td><td>58.1 &plusmn; 89.6</td><td>0.77 &plusmn; 0.50</td><td>1.56 &plusmn; 1.36</td><td>60%</td></tr>
+          <tr><td>512</td><td>232.8</td><td>4.80</td><td>13.02 &plusmn; 13.06</td><td>92.3 &plusmn; 105.3</td><td>0.91 &plusmn; 0.62</td><td>1.97 &plusmn; 1.60</td><td>35%</td></tr>
+          <tr><td rowspan="4">Isaac Sim</td><td>64</td><td><b>11.7</b></td><td><b>0.26</b></td><td>9.78 &plusmn; 10.74</td><td>60.5 &plusmn; 104.4</td><td>0.63 &plusmn; 0.36</td><td>1.47 &plusmn; 1.07</td><td>55%</td></tr>
+          <tr><td>128</td><td><b>22.2</b></td><td><b>0.50</b></td><td>10.88 &plusmn; 11.13</td><td>67.4 &plusmn; 108.0</td><td>0.66 &plusmn; 0.33</td><td>1.56 &plusmn; 1.03</td><td>45%</td></tr>
+          <tr><td>256</td><td><b>41.1</b></td><td><b>0.92</b></td><td>7.09 &plusmn; 5.60</td><td>32.4 &plusmn; 47.6</td><td><b>0.55 &plusmn; 0.15</b></td><td>1.16 &plusmn; 0.55</td><td>55%</td></tr>
+          <tr><td>512</td><td><b>80.7</b></td><td><b>1.79</b></td><td>5.84 &plusmn; 4.73</td><td>24.6 &plusmn; 32.8</td><td><b>0.54 &plusmn; 0.11</b></td><td>1.18 &plusmn; 0.41</td><td>60%</td></tr>
+          <tr class="ours"><td rowspan="4">FLASH</td><td>64</td><td>19.4</td><td>0.40</td><td><b>1.61 &plusmn; 1.18</b></td><td><b>3.7 &plusmn; 4.3</b></td><td><b>0.53 &plusmn; 0.42</b></td><td><b>0.92 &plusmn; 1.22</b></td><td><b>100%</b></td></tr>
+          <tr class="ours"><td>128</td><td>36.0</td><td>0.75</td><td><b>1.54 &plusmn; 0.88</b></td><td><b>3.1 &plusmn; 1.9</b></td><td><b>0.44 &plusmn; 0.08</b></td><td><b>0.66 &plusmn; 0.27</b></td><td><b>100%</b></td></tr>
+          <tr class="ours"><td>256</td><td>68.9</td><td>1.42</td><td><b>1.95 &plusmn; 1.82</b></td><td><b>5.5 &plusmn; 11.0</b></td><td>0.56 &plusmn; 0.34</td><td><b>1.02 &plusmn; 1.15</b></td><td><b>95%</b></td></tr>
+          <tr class="ours"><td>512</td><td>137.3</td><td>2.84</td><td><b>2.08 &plusmn; 1.93</b></td><td><b>3.9 &plusmn; 3.2</b></td><td>0.58 &plusmn; 0.59</td><td><b>1.02 &plusmn; 1.52</b></td><td><b>95%</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="figure-caption has-text-centered">
+      Simulator backend evaluation under the same cloth-manipulation task and MPPI controller.
+      <b>K = number of parallel rollout environments</b> (the candidate action sequences MPPI samples
+      and evaluates in parallel at each step). <b>Step</b> / <b>MPPI</b>: wall-clock per dynamics step /
+      per rollout batch; <b>KP err.</b>: keypoint alignment error; <b>SR</b>: success rate.
+      Bold marks the best per column.
+    </p>
+
+    <!-- 仿真器对比 rollout：每行一个 K，三个仿真器同 seed / 同 cost / 同 cloth，FLASH 在最左。
+         换其它 case 只需改 src 里的 K*_seed* 目录与 caption 的 KP err（数据见该目录 README.txt）。 -->
+    <h3 class="title is-5 has-text-centered" style="margin-top:1.5rem; margin-bottom:0.25rem;">
+      Same-condition MPPI rollout comparison
+    </h3>
+    <p class="figure-caption has-text-left" style="margin-bottom:1rem;">
+      Each clip is a live <b>vanilla-MPPI</b> diagonal fold with the simulator used as the rollout
+      engine inside the MPPI loop. The <b>controller, cost, initial state, seed, K, and cloth asset
+      are identical</b> across the three columns &mdash; only the simulator backend changes, so the
+      observed behaviors reflect backend-specific rollout and control dynamics. KP err. = settled
+      pick-to-target corner distance (lower is better).
+    </p>
+
+    <!-- K = 64 -->
+    <h3 class="title is-6 has-text-centered" style="margin-bottom:0.4rem;">K = 64</h3>
+    <div class="columns is-centered" style="margin-bottom:0.5rem;">
+      <div class="column is-one-third">
+        <video autoplay controls muted loop playsinline class="result-video">
+          <source src="./static/videos/mppi_sim_fold_demos/K64_seed949/flash.mp4" type="video/mp4">
+        </video>
+        <p class="figure-caption has-text-centered"><b>FLASH</b> &mdash; KP err. <b>1.27 cm</b></p>
+      </div>
+      <div class="column is-one-third">
+        <video autoplay controls muted loop playsinline class="result-video">
+          <source src="./static/videos/mppi_sim_fold_demos/K64_seed949/isaac_lab.mp4" type="video/mp4">
+        </video>
+        <p class="figure-caption has-text-centered">Isaac Sim &mdash; KP err. 5.58 cm</p>
+      </div>
+      <div class="column is-one-third">
+        <video autoplay controls muted loop playsinline class="result-video">
+          <source src="./static/videos/mppi_sim_fold_demos/K64_seed949/newton.mp4" type="video/mp4">
+        </video>
+        <p class="figure-caption has-text-centered">Newton &mdash; KP err. 18.61 cm</p>
+      </div>
+    </div>
+
+    <!-- K = 256 -->
+    <h3 class="title is-6 has-text-centered" style="margin-bottom:0.4rem;">K = 256</h3>
+    <div class="columns is-centered" style="margin-bottom:0.5rem;">
+      <div class="column is-one-third">
+        <video autoplay controls muted loop playsinline class="result-video">
+          <source src="./static/videos/mppi_sim_fold_demos/K256_seed1741/flash.mp4" type="video/mp4">
+        </video>
+        <p class="figure-caption has-text-centered"><b>FLASH</b> &mdash; KP err. <b>1.49 cm</b></p>
+      </div>
+      <div class="column is-one-third">
+        <video autoplay controls muted loop playsinline class="result-video">
+          <source src="./static/videos/mppi_sim_fold_demos/K256_seed1741/isaac_lab.mp4" type="video/mp4">
+        </video>
+        <p class="figure-caption has-text-centered">Isaac Sim &mdash; KP err. 15.56 cm</p>
+      </div>
+      <div class="column is-one-third">
+        <video autoplay controls muted loop playsinline class="result-video">
+          <source src="./static/videos/mppi_sim_fold_demos/K256_seed1741/newton.mp4" type="video/mp4">
+        </video>
+        <p class="figure-caption has-text-centered">Newton &mdash; KP err. 30.85 cm</p>
+      </div>
+    </div>
+
+    <!-- K = 512 -->
+    <h3 class="title is-6 has-text-centered" style="margin-bottom:0.4rem;">K = 512</h3>
+    <div class="columns is-centered" style="margin-bottom:0.5rem;">
+      <div class="column is-one-third">
+        <video autoplay controls muted loop playsinline class="result-video">
+          <source src="./static/videos/mppi_sim_fold_demos/K512_seed6513/flash.mp4" type="video/mp4">
+        </video>
+        <p class="figure-caption has-text-centered"><b>FLASH</b> &mdash; KP err. <b>0.80 cm</b></p>
+      </div>
+      <div class="column is-one-third">
+        <video autoplay controls muted loop playsinline class="result-video">
+          <source src="./static/videos/mppi_sim_fold_demos/K512_seed6513/isaac_lab.mp4" type="video/mp4">
+        </video>
+        <p class="figure-caption has-text-centered">Isaac Sim &mdash; KP err. 19.56 cm</p>
+      </div>
+      <div class="column is-one-third">
+        <video autoplay controls muted loop playsinline class="result-video">
+          <source src="./static/videos/mppi_sim_fold_demos/K512_seed6513/newton.mp4" type="video/mp4">
+        </video>
+        <p class="figure-caption has-text-centered">Newton &mdash; KP err. 31.75 cm</p>
+      </div>
+    </div>
+    <p class="figure-caption has-text-left" style="margin-bottom:1rem;">
+      <b>Clarification.</b> Simulator parameters are selected using a predefined folding trajectory, while the clips show closed-loop MPPI rollouts with those parameters. Newton's fly-away occurs after MPPI control terminates, suggesting post-control simulation instability rather than MPPI intentionally selecting a fly-away action. Isaac Sim mainly fails on pin tracking: under the real-time per-step iteration budget its constraint solver does not converge enough for the controlled vertices to track their kinematic targets, so MPPI reaches its step limit before the cloth reaches the goal.
+    </p>
+  </div>
+</section>
+
+
+<!-- ===== RGB-native Real-to-Sim（Simulator Backbone 之后）===== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">RGB-native Real-to-Sim</h2>
+    <div class="content has-text-justified">
+      <p>
+        The real-to-sim module recovers a simulation-compatible cloth state from a <b>single RGB image</b>. A frozen DINOv2 encoder extracts dense patch features; <b><i>N</i> learnable canonical tokens</b> (one per mesh vertex) aggregate visual evidence and exchange structural context through self-attention, and a shared decoder maps each token to its deformed 3D vertex position. Trained <b>purely on synthetic RGB data</b> with image- and latent-level augmentation (including random grasping-point masking), it bridges the sim-to-real visual gap without any real-world annotation.
+      </p>
+      <p>
+        Against a point-cloud diffusion estimator (DPM) and a depth-based variant (DeFM), the RGB-native module attains the <b>lowest reconstruction error on every metric</b> and the <b>fastest inference</b> &mdash; about 7&ndash;12&nbsp;ms per frame versus 300&ndash;500&nbsp;ms for the diffusion baseline.
+      </p>
+    </div>
+
+    <div style="overflow-x:auto;">
+      <table class="result-table">
+        <thead>
+          <tr>
+            <th>Asset</th><th>Real-to-Sim</th>
+            <th>MSE [mm&sup2;] &darr;</th><th>CD [mm] &darr;</th>
+            <th>EMD [mm] &darr;</th><th>Latency [ms] &darr;</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="ours"><td rowspan="3" style="background:#fff;">Towel</td><td><b>Ours (RGB)</b></td><td><b>2.33 &plusmn; 1.21</b></td><td><b>1.94 &plusmn; 0.41</b></td><td><b>1.98 &plusmn; 0.45</b></td><td><b>7.4 &plusmn; 0.6</b></td></tr>
+          <tr><td>DPM</td><td>7.17 &plusmn; 2.22</td><td>3.89 &plusmn; 0.67</td><td>4.01 &plusmn; 0.72</td><td>318.5 &plusmn; 3.7</td></tr>
+          <tr><td>DeFM</td><td>43.36 &plusmn; 34.66</td><td>5.51 &plusmn; 0.99</td><td>6.53 &plusmn; 1.52</td><td>12.6 &plusmn; 0.5</td></tr>
+          <tr class="ours"><td rowspan="3" style="background:#fff;">Long-sleeve Shirt</td><td><b>Ours (RGB)</b></td><td><b>24.23 &plusmn; 11.49</b></td><td><b>3.65 &plusmn; 0.78</b></td><td><b>4.67 &plusmn; 1.24</b></td><td><b>12.4 &plusmn; 0.4</b></td></tr>
+          <tr><td>DPM</td><td>45.74 &plusmn; 14.19</td><td>5.93 &plusmn; 0.27</td><td>8.21 &plusmn; 0.65</td><td>512.9 &plusmn; 6.0</td></tr>
+          <tr><td>DeFM</td><td>43.52 &plusmn; 22.02</td><td>4.05 &plusmn; 0.38</td><td>5.93 &plusmn; 0.91</td><td>18.0 &plusmn; 0.6</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="figure-caption has-text-centered">
+      State-estimation comparison: per-vertex MSE, Chamfer Distance, Earth Mover's Distance, and
+      single-frame inference latency on the validation split. Best per column in bold.
+    </p>
+
+    <div class="has-text-centered" style="margin-top:1.5rem;">
+      <img src="./static/images/Real2Sim_reconstruction_overlay3_1.png" class="section-figure" style="width:75%;" alt="Real-to-sim reconstruction">
+      <img src="./static/images/Real2Sim_reconstruction_overlay3_2.png" class="section-figure" style="width:75%;" alt="Real-to-sim reconstruction">
+      <p class="figure-caption">
+        Real-world real-to-sim reconstruction on (a) towel and (b) long-sleeve top: from top to bottom,
+        the real observation, predicted vertices overlaid on the image, and the reconstructed cloth.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== Prior-guided MPPI Refinement ===== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Real-World Evaluation</h2>
+    <div class="content has-text-justified">
+      <p>
+        A base policy provides a nominal action sequence as a <b>task-level prior</b>; at each step we
+        sample <i>K</i> candidates around it, roll them out in FLASH, and let MPPI reweight them into a
+        refined sequence, executing only the <b>first action</b> in a <b>receding-horizon</b> loop. On
+        real hardware the full pipeline reaches <b>9/10</b> and <b>8/10</b> on single- and dual-arm
+        folding, far above base-policy execution (3/10, 1/10), and replacing any single component
+        degrades the whole loop.
+      </p>
+    </div>
+
+    <div style="overflow-x:auto;">
+      <table class="result-table">
+        <thead>
+          <tr>
+            <th>Task</th><th>Real-to-Sim</th><th>Backend</th><th>Controller</th><th>Real SR &uarr;</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="ours"><td rowspan="4" style="background:#fff;">Single-arm diagonal</td><td><b>Ours (RGB)</b></td><td><b>FLASH</b></td><td><b>MPPI</b></td><td><b>9/10</b></td></tr>
+          <tr><td>DPM</td><td>FLASH</td><td>MPPI</td><td>6/10</td></tr>
+          <tr><td>Ours (RGB)</td><td>Isaac Sim</td><td>MPPI</td><td>5/10</td></tr>
+          <tr><td>Ours (RGB)</td><td>FLASH</td><td>Base-policy</td><td>3/10</td></tr>
+          <tr class="ours"><td rowspan="4" style="background:#fff;">Dual-arm symmetric</td><td><b>Ours (RGB)</b></td><td><b>FLASH</b></td><td><b>MPPI</b></td><td><b>8/10</b></td></tr>
+          <tr><td>DPM</td><td>FLASH</td><td>MPPI</td><td>3/10</td></tr>
+          <tr><td>Ours (RGB)</td><td>Isaac Sim</td><td>MPPI</td><td>4/10</td></tr>
+          <tr><td>Ours (RGB)</td><td>FLASH</td><td>Base-policy</td><td>1/10</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="figure-caption has-text-centered">
+      Real-world pipeline-variant evaluation: each row replaces one component of the full pipeline
+      (first row). Success = all target corner pairs aligned within 2&nbsp;cm.
+    </p>
+  </div>
+</section>
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="has-text-centered">
+      <img src="./static/images/generalization_results.png" class="section-figure" alt="Real-world folding grid">
+      <p class="figure-caption">
+        Real-world cloth folding across diverse garments and initial configurations, executed by the
+        closed-loop simulator-in-the-loop controller.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+
+
+<!-- ===== BibTeX ===== -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <!-- 匿名版引用 -->
+    <pre class="anon-only"><code>@inproceedings{anonymous2026cloth,
+  title     = {Enabling Robust Cloth Manipulation via Inference-Time Simulator-in-the-Loop Refinement},
+  author    = {Anonymous},
+  booktitle = {Anonymous},
+  year      = {2026},
+  note      = {Under review},
+}</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            The website template is borrowed from <a
+              href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>. We thank the authors
+            for open-sourcing it.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
